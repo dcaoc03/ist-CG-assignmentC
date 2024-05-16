@@ -6,14 +6,14 @@
 - José Fernandes, 103727
 
 ### Tarefas do trabalho:
-- **Tarefa 1**: criação do cilindro e dos aneis, assim como os respetivos movimentos
-- **Tarefa 2**: criação da skydome
-- **Tarefa 3**: criação e movimentos das superfícies paramétricas
-- **Tarefa 4**: implementação das iluminações direcional e ambiente
-- **Tarefa 5**: construção da faixa de Mobius
-- **Tarefa 6**: adição de luzes à faixa de Mobius e às superfícies paramétricas
-- **Tarefa 7**: implementação da alternância de materiais e sombreamento
-- **Tarefa 8**: adição de câmaras fixa e VR
+- **Tarefa 1**: criação do cilindro e dos aneis, assim como os respetivos movimentos (Diogo)
+- **Tarefa 2**: criação da skydome (Pedro)
+- **Tarefa 3**: criação e movimentos das superfícies paramétricas (Diogo e Pedro)
+- **Tarefa 4**: implementação das iluminações direcional e ambiente (José)
+- **Tarefa 5**: construção da faixa de Mobius (Pedro)
+- **Tarefa 6**: adição de luzes à faixa de Mobius e às superfícies paramétricas (José)
+- **Tarefa 7**: implementação da alternância de materiais e sombreamento (Diogo)
+- **Tarefa 8**: adição de câmaras fixa e VR (José)
 
 ### Distribuição de tarefas:
 #### DONE:
