@@ -13,30 +13,41 @@ var camera, scene, renderer;
 var geometry, material, mesh;
 
 var cylinder, innerRing, middleRing, outerRing;
+var rings = [];
+var moveUpRing = [];
 
-var velocity;
+var keys = {};
 
 var axis;
 
+// Ring radius
+    const ringRadius = 4;
+
 // Cylinder dimensions
-    const cylinderRadius = 2;
-    const cylinderHeight = 5;
-    const cylinderColor = 0x00ff00;
+    const cylinderRadius = 3;
+    const cylinderHeight = 7;
+    const cylinderColor = 0xff0099;
 
 // Inner ring dimensions
     const innerRingInnerRadius = cylinderRadius;
-    const innerRingOuterRadius = innerRingInnerRadius+3;
-    const innerRingColor = 0x0000ff;
+    const innerRingOuterRadius = innerRingInnerRadius+ringRadius;
+    const innerRingColor = 0x0055ff;
 
 // Middle ring dimensions
     const middleRingInnerRadius = innerRingOuterRadius;
-    const middleRingOuterRadius = middleRingInnerRadius+3;
-    const middleRingColor = 0xff00ff;
+    const middleRingOuterRadius = middleRingInnerRadius+ringRadius;
+    const middleRingColor = 0x00bb66;
     
 // Outer ring dimensions
     const outerRingInnerRadius = middleRingOuterRadius;
-    const outerRingOuterRadius = outerRingInnerRadius+3;
-    const outerRingColor = 0xffff00;
+    const outerRingOuterRadius = outerRingInnerRadius+ringRadius;
+    const outerRingColor = 0xffdd00;
+
+// Ring movement
+    const ringVelocity = 0.05;
+    const maximumHeight = 5;
+    const minimumHeight = -5;
+    var movingUp = true;
 
 /////////////////////
 /* CREATE SCENE(S) */
@@ -48,14 +59,17 @@ function createScene() {
     scene = new THREE.Scene();
 
     axis = new THREE.AxesHelper(10);
-    axis.visible = false;
+    axis.visible = true;
 
     scene.add(axis);
 
     createCylinder(0, 0, 0);
-    createRing(innerRing, 0, 0, 0, innerRingInnerRadius, innerRingOuterRadius, innerRingColor);
-    createRing(middleRing, 0, 0, 0, middleRingInnerRadius, middleRingOuterRadius, middleRingColor);
-    createRing(outerRing, 0, 0, 0, outerRingInnerRadius, outerRingOuterRadius, outerRingColor);
+    rings.push(createRing(0, 0, 0, innerRingInnerRadius, innerRingOuterRadius, innerRingColor));
+    rings.push(createRing(0, 0, 0, middleRingInnerRadius, middleRingOuterRadius, middleRingColor));
+    rings.push(createRing(0, 0, 0, outerRingInnerRadius, outerRingOuterRadius, outerRingColor));
+    scene.add(rings[0]);
+    scene.add(rings[1]);
+    scene.add(rings[2]);
 }
 
 //////////////////////
@@ -68,9 +82,9 @@ function createCamera() {
                                          window.innerWidth / window.innerHeight,
                                          1,
                                          1000);
-    camera.position.x = 10;
-    camera.position.y = 10;
-    camera.position.z = 10;
+    camera.position.x = 20;
+    camera.position.y = 20;
+    camera.position.z = 20;
     camera.lookAt(scene.position);
 }
 
@@ -98,21 +112,21 @@ function createCylinder(x, y, z) {
     scene.add(cylinder);
 }
 
-function createRing(ring, x, y, z, innerRadius, outerRadius, ringColor) {
+function createRing(x, y, z, innerRadius, outerRadius, ringColor) {
     'use strict';
 
-    ring = new THREE.Object3D();
+    var ring = new THREE.Object3D();
 
     geometry = new THREE.RingGeometry(innerRadius, outerRadius);
     material = new THREE.MeshBasicMaterial({ color: ringColor, wireframe: false });
     mesh = new THREE.Mesh(geometry, material);
     mesh.rotateX(3*Math.PI/2);
+    moveUpRing.push(true);
+
     ring.add(mesh);
 
-    ring.position.x = x;
-    ring.position.y = y;
-    ring.position.z = z;
-    scene.add(ring);
+    ring.position.set(x, y, z);
+    return ring;
 }
 
 //////////////////////
@@ -134,8 +148,32 @@ function handleCollisions(){
 ////////////
 /* UPDATE */
 ////////////
+function moveRing(num) {
+    if (moveUpRing[num]) {
+        rings[num].position.y += ringVelocity;
+        if (rings[num].position.y >= maximumHeight)
+            moveUpRing[num] = false;
+    } else {
+        rings[num].position.y -= ringVelocity;
+        if (rings[num].position.y <= minimumHeight)
+            moveUpRing[num] = true;
+    }
+}
+
 function update(){
     'use strict';
+
+    cylinder.rotateY(0.01);
+
+    if (keys[49]) { // Tecla '1'
+        moveRing(0);
+    }
+    if (keys[50]) { // Tecla '2'
+        moveRing(1);
+    }
+    if (keys[51]) { // Tecla '3'
+        moveRing(2);
+    }
 
 }
 
@@ -162,9 +200,9 @@ function init() {
 
     createScene();
     createCamera();
-    velocity = 0.10;
 
     window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
     window.addEventListener("resize", onResize);
 }
 
@@ -174,6 +212,7 @@ function init() {
 
 function animate() {
     'use strict';
+    update();
 
     render();
 
@@ -203,8 +242,7 @@ function onResize() {
 function onKeyDown(e) {
     'use strict';
 
-    switch (e.keyCode) {
-    }
+    keys[e.keyCode] = true;
 }
 
 ///////////////////////
@@ -212,6 +250,10 @@ function onKeyDown(e) {
 ///////////////////////
 function onKeyUp(e){
     'use strict';
+
+    keys[e.keyCode] = false;
+    //active_key.textContent = "";
+    //changingTextActiveKey.style.color = 'white';
 }
 
 init();
