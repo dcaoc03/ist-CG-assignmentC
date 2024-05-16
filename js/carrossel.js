@@ -12,16 +12,31 @@ var camera, scene, renderer;
 
 var geometry, material, mesh;
 
-var cylinder;
+var cylinder, innerRing, middleRing, outerRing;
 
 var velocity;
 
 var axis;
 
 // Cylinder dimensions
-    const cylinderRadius = 1;
+    const cylinderRadius = 2;
     const cylinderHeight = 5;
     const cylinderColor = 0x00ff00;
+
+// Inner ring dimensions
+    const innerRingInnerRadius = cylinderRadius;
+    const innerRingOuterRadius = innerRingInnerRadius+3;
+    const innerRingColor = 0x0000ff;
+
+// Middle ring dimensions
+    const middleRingInnerRadius = innerRingOuterRadius;
+    const middleRingOuterRadius = middleRingInnerRadius+3;
+    const middleRingColor = 0xff00ff;
+    
+// Outer ring dimensions
+    const outerRingInnerRadius = middleRingOuterRadius;
+    const outerRingOuterRadius = outerRingInnerRadius+3;
+    const outerRingColor = 0xffff00;
 
 /////////////////////
 /* CREATE SCENE(S) */
@@ -38,6 +53,9 @@ function createScene() {
     scene.add(axis);
 
     createCylinder(0, 0, 0);
+    createRing(innerRing, 0, 0, 0, innerRingInnerRadius, innerRingOuterRadius, innerRingColor);
+    createRing(middleRing, 0, 0, 0, middleRingInnerRadius, middleRingOuterRadius, middleRingColor);
+    createRing(outerRing, 0, 0, 0, outerRingInnerRadius, outerRingOuterRadius, outerRingColor);
 }
 
 //////////////////////
@@ -50,9 +68,9 @@ function createCamera() {
                                          window.innerWidth / window.innerHeight,
                                          1,
                                          1000);
-    camera.position.x = 5;
-    camera.position.y = 5;
-    camera.position.z = 5;
+    camera.position.x = 10;
+    camera.position.y = 10;
+    camera.position.z = 10;
     camera.lookAt(scene.position);
 }
 
@@ -67,7 +85,7 @@ function createCamera() {
 function createCylinder(x, y, z) {
     'use strict';
 
-    var cylinder = new THREE.Object3D();
+    cylinder = new THREE.Object3D();
 
     geometry = new THREE.CylinderGeometry(cylinderRadius, cylinderRadius, cylinderHeight);
     material = new THREE.MeshBasicMaterial({ color: cylinderColor, wireframe: false });
@@ -78,6 +96,23 @@ function createCylinder(x, y, z) {
     cylinder.position.y = y;
     cylinder.position.z = z;
     scene.add(cylinder);
+}
+
+function createRing(ring, x, y, z, innerRadius, outerRadius, ringColor) {
+    'use strict';
+
+    ring = new THREE.Object3D();
+
+    geometry = new THREE.RingGeometry(innerRadius, outerRadius);
+    material = new THREE.MeshBasicMaterial({ color: ringColor, wireframe: false });
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.rotateX(3*Math.PI/2);
+    ring.add(mesh);
+
+    ring.position.x = x;
+    ring.position.y = y;
+    ring.position.z = z;
+    scene.add(ring);
 }
 
 //////////////////////
