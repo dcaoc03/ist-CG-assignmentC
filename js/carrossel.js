@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { ParametricGeometry } from 'three/addons/geometries/ParametricGeometry.js';
+import { ParametricGeometries } from "three/addons/geometries/ParametricGeometries.js";
+
 //import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 //import { VRButton } from 'three/addons/webxr/VRButton.js';
 //import * as Stats from 'three/addons/libs/stats.module.js';
@@ -12,18 +15,20 @@ var camera, scene, renderer;
 
 var geometry, material, mesh;
 
-var cylinder, innerRing, middleRing, outerRing;
+var cylinder;
 var rings = [];
 var moveUpRing = [];
+var parametricSurfaces = [];
+const parametricSurfaceColors = [0xe81416, 0xffa500, 0xfaeb36, 0x79c314, 0x487de7, 0x4b369d, 0x70369d];
 
 var keys = {};
 
 var axis;
 
 // Ring radius
-    const ringRadius = 6;
+    const ringRadius = 7;
     const ringLength = 2;
-    const ringHeight = 6;
+    const ringHeight = 7;
 
 // Cylinder dimensions
     const cylinderRadius = 4;
@@ -49,7 +54,6 @@ var axis;
     const ringVelocity = 0.05;
     const maximumHeight = 5;
     const minimumHeight = -5;
-    var movingUp = true;
 
 /////////////////////
 /* CREATE SCENE(S) */
@@ -65,10 +69,21 @@ function createScene() {
 
     scene.add(axis);
 
+    // Cylinder creation
     createCylinder(0, 0, 0);
+
+    // Array of Parametric Geometries creation
+    parametricSurfaces.push(new ParametricGeometry(ParametricGeometries.mobius3d));
+    parametricSurfaces.push(new ParametricGeometry(ParametricGeometries.mobius));
+    parametricSurfaces.push(new ParametricGeometries.SphereGeometry(2));
+    parametricSurfaces.push(new ParametricGeometries.TorusKnotGeometry(1, 2));
+
+    // Ring creation
     rings.push(createRing(0, 0, 0, innerRingInnerRadius, innerRingOuterRadius, innerRingColor));
     rings.push(createRing(0, 0, 0, middleRingInnerRadius, middleRingOuterRadius, middleRingColor));
     rings.push(createRing(0, 0, 0, outerRingInnerRadius, outerRingOuterRadius, outerRingColor));
+    
+    // Adding the rings to the axis of the cylinder
     cylinder.add(rings[0]);
     cylinder.add(rings[1]);
     cylinder.add(rings[2]);
@@ -84,9 +99,9 @@ function createCamera() {
                                          window.innerWidth / window.innerHeight,
                                          1,
                                          1000);
-    camera.position.x = 20;
-    camera.position.y = 20;
-    camera.position.z = 20;
+    camera.position.x = 30;
+    camera.position.y = 30;
+    camera.position.z = 30;
     camera.lookAt(scene.position);
 }
 
@@ -152,25 +167,21 @@ function createRing(x, y, z, innerRadius, outerRadius, ringColor) {
     return ring;
 }
 
-/*function parametricSurface(u, v) {
-    var x = Math.sin(u) * Math.cos(v);
-    var y = Math.sin(u) * Math.sin(v);
-    var z = Math.cos(u);
-    return new THREE.Vector3(x, y, z);
-}*/
-
 function createParametricSurfaces(obj, innerRadius, outerRadius) {
     'use strict';
 
     for (let angle=0; angle < 2*Math.PI; angle += Math.PI/4) {
-        geometry = new THREE.BoxGeometry(1,1,1);
-        material = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: false });
+        const random = Math.floor(Math.random() * parametricSurfaces.length);
+        geometry = parametricSurfaces[random];
+        const random2 = Math.floor(Math.random() * parametricSurfaceColors.length);
+        material = new THREE.MeshBasicMaterial({ color: parametricSurfaceColors[random2], wireframe: false });
         mesh = new THREE.Mesh(geometry, material);
 
         mesh.translateOnAxis(new THREE.Vector3(Math.sin(angle), 0, Math.cos(angle)), (innerRadius+outerRadius)/2);
-        mesh.translateY(1/2+ringLength/2);
+        mesh.translateY(1+ringLength/2);
 
         obj.add(mesh);
+        mesh.rotateX(Math.PI/2);
     }
 }
 
