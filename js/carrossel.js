@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { ParametricGeometry } from 'three/addons/geometries/ParametricGeometry.js';
 import { ParametricGeometries } from "three/addons/geometries/ParametricGeometries.js";
+import { VRButton } from 'three/addons/webxr/VRButton.js';
 
 //import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-//import { VRButton } from 'three/addons/webxr/VRButton.js';
 //import * as Stats from 'three/addons/libs/stats.module.js';
 //import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
@@ -252,7 +252,9 @@ function init() {
         antialias: true
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.xr.enabled = true;
     document.body.appendChild(renderer.domElement);
+    document.body.appendChild( VRButton.createButton( renderer ) );
 
     createScene();
     createCamera();
@@ -272,7 +274,7 @@ function animate() {
 
     render();
 
-    requestAnimationFrame(animate);
+    renderer.setAnimationLoop(animate);
 }
 
 ////////////////////////////
