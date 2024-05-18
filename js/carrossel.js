@@ -17,7 +17,7 @@ var geometry, material, mesh;
 
 var directionalLight;
 var cylinder;
-var rings = [], pointLights = [];
+var rings = [], spotLights = [];
 var moveUpRing = [];
 var parametricSurfaces = [];
 const parametricSurfaceColors = [0xe81416, 0xffa500, 0xfaeb36, 0x79c314, 0x487de7, 0x4b369d, 0x70369d];
@@ -198,13 +198,15 @@ function createParametricSurfaces(obj, innerRadius, outerRadius) {
         mesh.translateOnAxis(new THREE.Vector3(Math.sin(angle), 0, Math.cos(angle)), (innerRadius+outerRadius)/2);
         mesh.translateY(1+ringLength/2);
 
-        // Point Light
-        const pointLight = new THREE.PointLight(0xffffff, 8, 50);
-        pointLight.translateOnAxis(new THREE.Vector3(Math.sin(angle + Math.PI/8) , 0.1, Math.cos(angle + Math.PI/8)), (innerRadius+outerRadius)/2);
-        
-        pointLights.push(pointLight);
+        // Create a spotlight with a color, intensity, distance, angle, penumbra, and decay
+        const spotLight = new THREE.SpotLight(0xffffff, 5, 10, Math.PI / 12, 0.1, 1);
+        spotLight.translateOnAxis(new THREE.Vector3(Math.sin(angle + Math.PI/12), 0.1, Math.cos(angle + Math.PI/12)), (innerRadius+outerRadius)/2);
+        //spotLight.translateY(1+ringLength/2);
+        spotLight.target = mesh;
 
-        obj.add(pointLight);
+        spotLights.push(spotLight);
+
+        obj.add(spotLight);
         obj.add(mesh);
         mesh.rotateX(Math.PI/2);
     }
@@ -232,12 +234,12 @@ function handleCollisions(){
 function moveRing(num) {
     if (moveUpRing[num]) {
         rings[num].position.y += ringVelocity;
-        pointLights[num].position.y += ringVelocity;
+        spotLights[num].position.y += ringVelocity;
         if (rings[num].position.y >= maximumHeight)
             moveUpRing[num] = false;
     } else {
         rings[num].position.y -= ringVelocity;
-        pointLights[num].position.y -= ringVelocity;
+        spotLights[num].position.y -= ringVelocity;
         if (rings[num].position.y <= minimumHeight)
             moveUpRing[num] = true;
     }
