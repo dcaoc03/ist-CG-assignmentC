@@ -11,7 +11,7 @@ import { VRButton } from 'three/addons/webxr/VRButton.js';
 /* GLOBAL VARIABLES */
 //////////////////////
 
-var camera, scene, renderer;
+var camera, scene, renderer, directionalLight;
 
 var geometry, material, mesh;
 
@@ -111,10 +111,19 @@ function createCamera() {
 
 function createDirectionalLight() {
     'use strict';
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+    
+    directionalLight = new THREE.DirectionalLight(0xffffff);
+    directionalLight.intensity = 5;
     directionalLight.position.set(30, 30, -30);
     directionalLight.lookAt(scene.position);
     scene.add(directionalLight);
+}
+
+function createAmbientLight() {
+    'use strict';
+
+    const ambientLight = new THREE.AmbientLight(0xffb66d, 1);
+    scene.add(ambientLight);
 }
 
 ////////////////////////
@@ -238,7 +247,6 @@ function update(){
     if (keys[51]) { // Tecla '3'
         moveRing(2);
     }
-
 }
 
 /////////////
@@ -266,8 +274,10 @@ function init() {
 
     createScene();
     createCamera();
+    createAmbientLight();
     createDirectionalLight();
 
+    window.addEventListener("keypress", onKeyPress);
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
     window.addEventListener("resize", onResize);
@@ -309,8 +319,25 @@ function onResize() {
 function onKeyDown(e) {
     'use strict';
 
-    keys[e.keyCode] = true;
+    // "If" utilizado para evitar adicionar trues desnecessarios (o professor n gostou)
+    if (e.keyCode >= 49 && e.keyCode <= 51) {
+        keys[e.keyCode] = true;
+    }
 }
+
+function onKeyPress(e) {
+    'use strict';
+
+    switch (e.keyCode) {
+        case 100: // Tecla 'D'
+            if (directionalLight.intensity > 0) { directionalLight.intensity = 0; }
+            else { directionalLight.intensity = 3.5; }
+            break;
+        default:
+            break;
+    }
+}
+
 
 ///////////////////////
 /* KEY UP CALLBACK */
