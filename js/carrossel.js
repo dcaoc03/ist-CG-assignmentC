@@ -109,6 +109,14 @@ function createCamera() {
 /* CREATE LIGHT(S) */
 /////////////////////
 
+function createDirectionalLight() {
+    'use strict';
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+    directionalLight.position.set(30, 30, -30);
+    directionalLight.lookAt(scene.position);
+    scene.add(directionalLight);
+}
+
 ////////////////////////
 /* CREATE OBJECT3D(S) */
 ////////////////////////
@@ -119,7 +127,7 @@ function createCylinder(x, y, z) {
     cylinder = new THREE.Object3D();
 
     geometry = new THREE.CylinderGeometry(cylinderRadius, cylinderRadius, cylinderHeight);
-    material = new THREE.MeshBasicMaterial({ color: cylinderColor, wireframe: false });
+    material = new THREE.MeshStandardMaterial({ color: cylinderColor, wireframe: false });
     mesh = new THREE.Mesh(geometry, material);
     cylinder.add(mesh);
 
@@ -155,7 +163,7 @@ function createRing(x, y, z, innerRadius, outerRadius, ringColor) {
     };
     
     geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-    material = new THREE.MeshBasicMaterial({ color: ringColor, wireframe: false });
+    material = new THREE.MeshStandardMaterial({ color: ringColor, wireframe: false });
     mesh = new THREE.Mesh(geometry, material);
     mesh.rotateX(3*Math.PI/2);
     moveUpRing.push(true);
@@ -174,7 +182,7 @@ function createParametricSurfaces(obj, innerRadius, outerRadius) {
         const random = Math.floor(Math.random() * parametricSurfaces.length);
         geometry = parametricSurfaces[random];
         const random2 = Math.floor(Math.random() * parametricSurfaceColors.length);
-        material = new THREE.MeshBasicMaterial({ color: parametricSurfaceColors[random2], wireframe: false });
+        material = new THREE.MeshStandardMaterial({ color: parametricSurfaceColors[random2], wireframe: false });
         mesh = new THREE.Mesh(geometry, material);
 
         mesh.translateOnAxis(new THREE.Vector3(Math.sin(angle), 0, Math.cos(angle)), (innerRadius+outerRadius)/2);
@@ -258,6 +266,7 @@ function init() {
 
     createScene();
     createCamera();
+    createDirectionalLight();
 
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
