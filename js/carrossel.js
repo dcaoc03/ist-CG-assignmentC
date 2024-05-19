@@ -20,7 +20,7 @@ var cylinder;
 var rings = [], spotLights = [];
 var moveUpRing = [];
 var parametricSurfaces = [];
-const parametricSurfaceColors = [0xe81416, 0xffa500, 0xfaeb36, 0x79c314, 0x487de7, 0x4b369d, 0x70369d];
+const parametricSurfaceColors = [0x63b4d1, 0x7699d4, 0x487de7, 0x4b369d, 0x70369d, 0x188fac, 0x826c7f, 0x5d4e60];
 
 var keys = {};
 
@@ -34,22 +34,22 @@ var axis;
 // Cylinder dimensions
     const cylinderRadius = 4;
     const cylinderHeight = 7;
-    const cylinderColor = 0xff0099;
+    const cylinderColor = 0xe5a9a9;
 
 // Inner ring dimensions
     const innerRingInnerRadius = cylinderRadius;
     const innerRingOuterRadius = innerRingInnerRadius+ringRadius;
-    const innerRingColor = 0x0055ff;
+    const innerRingColor = 0xd66ba0;
 
 // Middle ring dimensions
     const middleRingInnerRadius = innerRingOuterRadius;
     const middleRingOuterRadius = middleRingInnerRadius+ringRadius;
-    const middleRingColor = 0x00bb66;
+    const middleRingColor = 0xaf4d98;
     
 // Outer ring dimensions
     const outerRingInnerRadius = middleRingOuterRadius;
     const outerRingOuterRadius = outerRingInnerRadius+ringRadius;
-    const outerRingColor = 0xffdd00;
+    const outerRingColor = 0xd66ba0;
 
 // Ring movement
     const ringVelocity = 0.1;
