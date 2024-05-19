@@ -27,9 +27,9 @@ var keys = {};
 var axis;
 
 // Ring radius
-    const ringRadius = 7;
+    const ringRadius = 10;
     const ringLength = 2;
-    const ringHeight = 7;
+    const ringHeight = 10;
 
 // Cylinder dimensions
     const cylinderRadius = 4;
@@ -52,13 +52,34 @@ var axis;
     const outerRingColor = 0xffdd00;
 
 // Ring movement
-    const ringVelocity = 0.05;
-    const maximumHeight = 5;
-    const minimumHeight = -5;
+    const ringVelocity = 0.1;
+    const maximumHeight = 8;
+    const minimumHeight = -8;
 
 /////////////////////
 /* CREATE SCENE(S) */
 /////////////////////
+
+function parametricHyperbloid(u, v, target) {
+    
+    u = u * 2 * Math.PI;
+    v = 1.5 * (v - 0.5) * 2;
+
+    const x = Math.cosh(v) * Math.cos(u);
+    const y = Math.cosh(v) * Math.sin(u);
+    const z = Math.sinh(v);
+
+    target.set(x, y, z);
+}
+
+function parametricCylinder(u, v, target) {
+
+    const x = 2*Math.cos( u * 2 * Math.PI );
+    const y = 2*Math.sin( u * 2 * Math.PI );
+    const z = 5 * v;
+
+    target.set( x, y, z );
+}
 
 function createScene() {
     'use strict';
@@ -66,7 +87,7 @@ function createScene() {
     scene = new THREE.Scene();
 
     axis = new THREE.AxesHelper(10);
-    axis.visible = true;
+    axis.visible = false;
 
     scene.add(axis);
 
@@ -78,6 +99,13 @@ function createScene() {
     parametricSurfaces.push(new ParametricGeometry(ParametricGeometries.mobius));
     parametricSurfaces.push(new ParametricGeometries.SphereGeometry(2));
     parametricSurfaces.push(new ParametricGeometries.TorusKnotGeometry(1, 2));
+    parametricSurfaces.push(new ParametricGeometry(parametricHyperbloid));
+    parametricSurfaces.push(new ParametricGeometry(parametricCylinder, 25, 25));
+    geometry = new ParametricGeometry(ParametricGeometries.klein, 25, 25);
+    geometry.scale(0.5, 0.5, 0.5);
+    geometry.rotateX(Math.PI);
+    parametricSurfaces.push(geometry);
+    parametricSurfaces.push(new ParametricGeometry(ParametricGeometries.plane(4, 3), 25, 25));
 
     // Ring creation
     rings.push(createRing(0, 0, 0, innerRingInnerRadius, innerRingOuterRadius, innerRingColor));
@@ -188,20 +216,26 @@ function createRing(x, y, z, innerRadius, outerRadius, ringColor) {
 function createParametricSurfaces(obj, innerRadius, outerRadius) {
     'use strict';
 
+    // Shufflling the parametric surface array (in order to randomize the order in which the surfaces are drawn)
+    for (let i = parametricSurfaces.length - 1; i > 0; i--) { 
+        const j = Math.floor(Math.random() * (i + 1)); 
+        [parametricSurfaces[i], parametricSurfaces[j]] = [parametricSurfaces[j], parametricSurfaces[i]]; 
+    } 
+
     for (let angle=0; angle < 2*Math.PI; angle += Math.PI/4) {
-        const random = Math.floor(Math.random() * parametricSurfaces.length);
-        geometry = parametricSurfaces[random];
+        geometry = parametricSurfaces[angle/(Math.PI/4)];
         const random2 = Math.floor(Math.random() * parametricSurfaceColors.length);
-        material = new THREE.MeshStandardMaterial({ color: parametricSurfaceColors[random2], wireframe: false });
+        material = new THREE.MeshStandardMaterial({ color: parametricSurfaceColors[random2], wireframe: false, side: THREE.DoubleSide });
         mesh = new THREE.Mesh(geometry, material);
 
         mesh.translateOnAxis(new THREE.Vector3(Math.sin(angle), 0, Math.cos(angle)), (innerRadius+outerRadius)/2);
-        mesh.translateY(1+ringLength/2);
+        geometry.computeBoundingSphere();
+        mesh.translateY(geometry.boundingSphere.radius+ringLength/2);
 
         // Create a spotlight with a color, intensity, distance, angle, penumbra, and decay
-        const spotLight = new THREE.SpotLight(0xffffff, 5, 10, Math.PI / 12, 0.1, 1);
-        spotLight.translateOnAxis(new THREE.Vector3(Math.sin(angle + Math.PI/12), 0.1, Math.cos(angle + Math.PI/12)), (innerRadius+outerRadius)/2);
-        //spotLight.translateY(1+ringLength/2);
+        const spotLight = new THREE.SpotLight(0xffffff, 10, 20, Math.PI / 5, 0.1, 1);
+        spotLight.translateOnAxis(new THREE.Vector3(Math.sin(angle), 0, Math.cos(angle)), (innerRadius));
+        spotLight.translateY(ringLength/2)
         spotLight.target = mesh;
 
         spotLights.push(spotLight);
