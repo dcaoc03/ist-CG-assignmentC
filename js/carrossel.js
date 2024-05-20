@@ -254,7 +254,7 @@ function createSkydome(x, y, z) {
 
     var skydome = new THREE.Object3D();
 
-    geometry = new THREE.SphereGeometry(outerRingOuterRadius, 32, 32);
+    geometry = new THREE.SphereGeometry(outerRingOuterRadius, 32, 32, 0, Math.PI * 2, 0, Math.PI/2);
     var loader  = new THREE.TextureLoader();
     var texture = loader.load( "still_video.png" );
     material = new THREE.MeshPhongMaterial({ map: texture});
