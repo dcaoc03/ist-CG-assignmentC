@@ -91,6 +91,9 @@ function createScene() {
 
     scene.add(axis);
 
+    // Skydome creation
+    createSkydome(0, 0, 0);
+
     // Cylinder creation
     createCylinder(0, 0, 0);
 
@@ -244,6 +247,26 @@ function createParametricSurfaces(obj, innerRadius, outerRadius) {
         obj.add(mesh);
         mesh.rotateX(Math.PI/2);
     }
+}
+
+function createSkydome(x, y, z) {
+    'use strict';
+
+    var skydome = new THREE.Object3D();
+
+    geometry = new THREE.SphereGeometry(outerRingOuterRadius, 32, 32);
+    var loader  = new THREE.TextureLoader();
+    var texture = loader.load( "still_video.png" );
+    material = new THREE.MeshPhongMaterial({ map: texture});
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.material.side = THREE.BackSide;
+
+    skydome.add(mesh);
+
+    skydome.position.x = x;
+    skydome.position.y = y;
+    skydome.position.z = z;
+    scene.add(skydome);
 }
 
 //////////////////////
