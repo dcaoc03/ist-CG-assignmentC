@@ -59,7 +59,7 @@ var axis;
     const minimumHeight = -8;
 
 // Cylinder and surfaces movement
-    const surfaceVelocity = 0.01;
+    const surfaceVelocity = 0.05;
 
 /////////////////////
 /* CREATE SCENE(S) */
@@ -263,7 +263,7 @@ function createSkydome(x, y, z) {
 
     var skydome = new THREE.Object3D();
 
-    geometry = new THREE.SphereGeometry(outerRingOuterRadius, 32, 32, 0, Math.PI * 2, 0, Math.PI/2);
+    geometry = new THREE.SphereGeometry(2*outerRingOuterRadius, 32, 32, 0, Math.PI * 2, 0, Math.PI/2);
     var loader  = new THREE.TextureLoader();
     var texture = loader.load( "still_video.png" );
     material = new THREE.MeshPhongMaterial({ map: texture, side: THREE.BackSide});
@@ -353,7 +353,7 @@ function moveRing(num) {
 
 function moveSurfaces() {
     for (var i=0; i<parametricSurfaces.length; i++) {
-        parametricSurfaces[i].rotateY(surfaceVelocity);
+        parametricSurfaces[i].rotateZ(surfaceVelocity);
     }
 }
 
