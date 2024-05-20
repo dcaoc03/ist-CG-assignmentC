@@ -130,10 +130,11 @@ function createScene() {
     cylinder.add(rings[2]);
 
     // Adding all the necessary materials
-    materials.push(new THREE.MeshLambertMaterial({wireframe: false}));
-    materials.push(new THREE.MeshPhongMaterial({wireframe: false}));
-    materials.push(new THREE.MeshToonMaterial({wireframe: false}));
-    materials.push(new THREE.MeshNormalMaterial({wireframe: false}));
+    materials.push(new THREE.MeshLambertMaterial({wireframe: false, side: THREE.DoubleSide}));
+    materials.push(new THREE.MeshPhongMaterial({wireframe: false, side: THREE.DoubleSide}));
+    materials.push(new THREE.MeshToonMaterial({wireframe: false, side: THREE.DoubleSide}));
+    materials.push(new THREE.MeshNormalMaterial({wireframe: false, side: THREE.DoubleSide}));
+    materials.push(new THREE.MeshBasicMaterial({wireframe: false, side: THREE.DoubleSide}));
 }
 
 //////////////////////
@@ -364,6 +365,17 @@ function moveSurfaces() {
     }
 }
 
+function changeMaterials(newMaterial) {
+    // Change cylinder
+    cylinder.traverse(function (node) {
+        if (node instanceof THREE.Mesh) {
+            var oldMaterialColor = node.material.color;
+            node.material = newMaterial.clone();
+            node.material.color = oldMaterialColor;
+        }
+    });
+}
+
 function update(){
     'use strict';
 
@@ -496,6 +508,21 @@ function onKeyPress(e) {
             }
             break;
         case 69: // Tecla 'P(p)'
+            break;
+        case 113: // Tecla 'Q(q)'
+            changeMaterials(materials[0]);
+            break;
+        case 119: // Tecla 'W(w)'
+            changeMaterials(materials[1]);
+            break;
+        case 101: // Tecla 'E(e)'
+            changeMaterials(materials[2]);
+            break;
+        case 114: // Tecla 'R(r)'
+            changeMaterials(materials[3]);
+            break;
+        case 116: // Tecla 'T(t)'
+            changeMaterials(materials[4]);
             break;
         default:
             break;
