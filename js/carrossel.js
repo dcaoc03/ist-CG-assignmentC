@@ -94,6 +94,9 @@ function createScene() {
     // Skydome creation
     createSkydome(0, 0, 0);
 
+    // Mobius Strip creation
+    createMobiusStrip(0, 25, 0);
+
     // Cylinder creation
     createCylinder(0, 0, 0);
 
@@ -257,9 +260,8 @@ function createSkydome(x, y, z) {
     geometry = new THREE.SphereGeometry(outerRingOuterRadius, 32, 32, 0, Math.PI * 2, 0, Math.PI/2);
     var loader  = new THREE.TextureLoader();
     var texture = loader.load( "still_video.png" );
-    material = new THREE.MeshPhongMaterial({ map: texture});
+    material = new THREE.MeshPhongMaterial({ map: texture, side: THREE.BackSide});
     mesh = new THREE.Mesh(geometry, material);
-    mesh.material.side = THREE.BackSide;
 
     skydome.add(mesh);
 
@@ -267,6 +269,47 @@ function createSkydome(x, y, z) {
     skydome.position.y = y;
     skydome.position.z = z;
     scene.add(skydome);
+}
+
+function createMobiusStrip(x, y, z) {
+    var mobiusStrip = new THREE.Object3D();
+    geometry = new THREE.BufferGeometry();
+    // listar vértices (vectores 3D com as coordenadas de cada vértice)
+    const vertices = new Float32Array([
+    -1.0, -1.0, 1.0, // v0
+    1.0, -1.0, 1.0, // v1
+    1.0, 1.0, 1.0, // v2
+    -1.0, 1.0, 1.0, // v3
+    -1.0, -1.0, 0.0, // v4
+    1.0, -1.0, 0.0, // v5
+    1.0, 1.0, 0.0, // v6
+    -1.0, 1.0, 0.0, // v7
+    ]);
+    geometry.setAttribute( 'position', new THREE.BufferAttribute(vertices, 3) );
+    // listar tripletos de índices por forma a definir cada face/triângulo
+    // notem que a sequência de índices deve indicar o sentido da normal
+    const indices = [
+                    0, 1, 2,
+                    2, 3, 0,
+                    4, 5, 6,
+                    6, 7, 4,
+                    0, 4, 5,
+                    5, 1, 0,
+                    2, 6, 7,
+                    7, 3, 2
+                    ];
+    geometry.setIndex( indices );
+    // não esquecer de calcular as normais de cada face
+    geometry.computeVertexNormals();
+    // uma vez na posse de uma geometria, definir um material e criar uma Mesh
+    material = new THREE.MeshBasicMaterial( { color: 0xaec6cf }
+    );
+    mesh = new THREE.Mesh( geometry, material );
+    mobiusStrip.add(mesh);
+    mobiusStrip.position.x = x;
+    mobiusStrip.position.y = y;
+    mobiusStrip.position.z = z;
+    scene.add(mobiusStrip);
 }
 
 //////////////////////
