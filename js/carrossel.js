@@ -349,7 +349,7 @@ function moveRing(num) {
 }
 
 function moveSurfaces() {
-    for (i=0; i<parametricSurfaces.length; i++) {
+    for (var i=0; i<parametricSurfaces.length; i++) {
         parametricSurfaces[i].rotateY(surfaceVelocity);
     }
 }
