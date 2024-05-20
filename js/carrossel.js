@@ -20,7 +20,7 @@ var cylinder;
 var rings = [], spotLights = [];
 var ringMovement = [];
 var ringMovingUp = [];
-var ringRotationVelocity = 0.01;
+var ringRotationVelocity = 0.4;
 var parametricSurfaces = [];
 const parametricSurfaceColors = [0x63b4d1, 0x7699d4, 0x487de7, 0x4b369d, 0x70369d, 0x188fac, 0x826c7f, 0x5d4e60];
 var materials = [];
@@ -29,8 +29,14 @@ var keys = {};
 
 var axis;
 
+// Value of delta for a given frame
+var delta;
+
+// Clock of the machine
+const clock = new THREE.Clock();
+
 // Cylinder and surfaces movement
-    var surfaceRotationVelocity = 0.05;
+    var surfaceRotationVelocity = 0.8;
 
 // Ring radius
     const ringRadius = 10;
@@ -58,7 +64,7 @@ var axis;
     const outerRingColor = 0xd66ba0;
 
 // Ring movement
-    const ringVelocity = 0.1;
+    const ringVelocity = 3;
     const maximumHeight = 8;
     const minimumHeight = -8;
 
@@ -347,13 +353,13 @@ function handleCollisions(){
 ////////////
 function moveRing(num) {
     if (ringMovingUp[num]) {
-        rings[num].position.y += ringVelocity;
-        spotLights[num].position.y += ringVelocity;
+        rings[num].position.y += ringVelocity*delta;
+        spotLights[num].position.y += ringVelocity*delta;
         if (rings[num].position.y >= maximumHeight)
             ringMovingUp[num] = false;
     } else {
-        rings[num].position.y -= ringVelocity;
-        spotLights[num].position.y -= ringVelocity;
+        rings[num].position.y -= ringVelocity*delta;
+        spotLights[num].position.y -= ringVelocity*delta;
         if (rings[num].position.y <= minimumHeight)
             ringMovingUp[num] = true;
     }
@@ -361,7 +367,7 @@ function moveRing(num) {
 
 function moveSurfaces() {
     for (var i=0; i<parametricSurfaces.length; i++) {
-        parametricSurfaces[i].rotateZ(surfaceRotationVelocity);
+        parametricSurfaces[i].rotateZ(surfaceRotationVelocity*delta);
     }
 }
 
@@ -379,7 +385,9 @@ function changeMaterials(newMaterial) {
 function update(){
     'use strict';
 
-    cylinder.rotateY(ringRotationVelocity);
+    delta = clock.getDelta();
+
+    cylinder.rotateY(ringRotationVelocity*delta);
     moveSurfaces();
     
     if (ringMovement[0]) {
