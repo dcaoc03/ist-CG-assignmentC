@@ -18,7 +18,9 @@ var geometry, material, mesh;
 var directionalLight;
 var cylinder;
 var rings = [], spotLights = [];
-var moveUpRing = [];
+var ringMovement = [];
+var ringMovingUp = [];
+var ringRotationVelocity = 0.01;
 var parametricSurfaces = [];
 const parametricSurfaceColors = [0x63b4d1, 0x7699d4, 0x487de7, 0x4b369d, 0x70369d, 0x188fac, 0x826c7f, 0x5d4e60];
 
@@ -204,7 +206,8 @@ function createRing(x, y, z, innerRadius, outerRadius, ringColor) {
     material = new THREE.MeshStandardMaterial({ color: ringColor, wireframe: false });
     mesh = new THREE.Mesh(geometry, material);
     mesh.rotateX(3*Math.PI/2);
-    moveUpRing.push(true);
+    ringMovement.push(true);
+    ringMovingUp.push(true);
 
     ring.add(mesh);
     createParametricSurfaces(ring, innerRadius, outerRadius);
@@ -266,32 +269,45 @@ function handleCollisions(){
 /* UPDATE */
 ////////////
 function moveRing(num) {
-    if (moveUpRing[num]) {
+    if (ringMovingUp[num]) {
         rings[num].position.y += ringVelocity;
         spotLights[num].position.y += ringVelocity;
         if (rings[num].position.y >= maximumHeight)
-            moveUpRing[num] = false;
+            ringMovingUp[num] = false;
     } else {
         rings[num].position.y -= ringVelocity;
         spotLights[num].position.y -= ringVelocity;
         if (rings[num].position.y <= minimumHeight)
-            moveUpRing[num] = true;
+            ringMovingUp[num] = true;
     }
 }
 
 function update(){
     'use strict';
 
-    cylinder.rotateY(0.01);
-
-    if (keys[49]) { // Tecla '1'
+    cylinder.rotateY(ringRotationVelocity);
+    
+    if (ringMovement[0]) {
         moveRing(0);
     }
-    if (keys[50]) { // Tecla '2'
+    if (ringMovement[1]) {
         moveRing(1);
     }
-    if (keys[51]) { // Tecla '3'
+    if (ringMovement[2]) {
         moveRing(2);
+    }
+
+    if (keys[49]) { // Tecla '1'
+        keys[49] = false;
+        ringMovement[0] = !ringMovement[0];
+    }
+    if (keys[50]) { // Tecla '2'
+        keys[50] = false;
+        ringMovement[1] = !ringMovement[1];
+    }
+    if (keys[51]) { // Tecla '3'
+        keys[51] = false;
+        ringMovement[2] = !ringMovement[2];
     }
 }
 
@@ -308,6 +324,14 @@ function render() {
 /* INITIALIZE ANIMATION CYCLE */
 ////////////////////////////////
 
+function determine_rotation_direction(velocity) {
+    var random = Math.floor(Math.random() * 3) - 1;
+    while (!random) {
+        random = Math.floor(Math.random() * 3) - 1;
+    }
+    return random*velocity;
+}
+
 function init() {
     'use strict';
     renderer = new THREE.WebGLRenderer({
@@ -322,6 +346,8 @@ function init() {
     createCamera();
     createAmbientLight();
     createDirectionalLight();
+
+    ringRotationVelocity = determine_rotation_direction(ringRotationVelocity);
 
     window.addEventListener("keypress", onKeyPress);
     window.addEventListener("keydown", onKeyDown);
@@ -380,7 +406,10 @@ function onKeyPress(e) {
             if (directionalLight.intensity > 0) { directionalLight.intensity = 0; }
             else { directionalLight.intensity = 3.5; }
             break;
-        case 69: // Tecla 'P(p)'
+        case 115: // Tecla 'S(s)'
+            for (let index = 0; index < spotLights.length; index++) {
+                spotLights[index].visible = !spotLights[index].visible;
+            }
             break;
         case 69: // Tecla 'P(p)'
             break;
