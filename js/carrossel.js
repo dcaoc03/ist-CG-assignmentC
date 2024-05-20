@@ -23,10 +23,14 @@ var ringMovingUp = [];
 var ringRotationVelocity = 0.01;
 var parametricSurfaces = [];
 const parametricSurfaceColors = [0x63b4d1, 0x7699d4, 0x487de7, 0x4b369d, 0x70369d, 0x188fac, 0x826c7f, 0x5d4e60];
+var materials = [];
 
 var keys = {};
 
 var axis;
+
+// Cylinder and surfaces movement
+    var surfaceRotationVelocity = 0.05;
 
 // Ring radius
     const ringRadius = 10;
@@ -57,9 +61,6 @@ var axis;
     const ringVelocity = 0.1;
     const maximumHeight = 8;
     const minimumHeight = -8;
-
-// Cylinder and surfaces movement
-    const surfaceVelocity = 0.05;
 
 /////////////////////
 /* CREATE SCENE(S) */
@@ -127,6 +128,12 @@ function createScene() {
     cylinder.add(rings[0]);
     cylinder.add(rings[1]);
     cylinder.add(rings[2]);
+
+    // Adding all the necessary materials
+    materials.push(new THREE.MeshLambertMaterial({wireframe: false}));
+    materials.push(new THREE.MeshPhongMaterial({wireframe: false}));
+    materials.push(new THREE.MeshToonMaterial({wireframe: false}));
+    materials.push(new THREE.MeshNormalMaterial({wireframe: false}));
 }
 
 //////////////////////
@@ -176,7 +183,7 @@ function createCylinder(x, y, z) {
     cylinder = new THREE.Object3D();
 
     geometry = new THREE.CylinderGeometry(cylinderRadius, cylinderRadius, cylinderHeight);
-    material = new THREE.MeshStandardMaterial({ color: cylinderColor, wireframe: false });
+    material = new THREE.MeshLambertMaterial({ color: cylinderColor, wireframe: false });
     mesh = new THREE.Mesh(geometry, material);
     cylinder.add(mesh);
 
@@ -212,7 +219,7 @@ function createRing(x, y, z, innerRadius, outerRadius, ringColor) {
     };
     
     geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-    material = new THREE.MeshStandardMaterial({ color: ringColor, wireframe: false });
+    material = new THREE.MeshLambertMaterial({ color: ringColor, wireframe: false });
     mesh = new THREE.Mesh(geometry, material);
     mesh.rotateX(3*Math.PI/2);
     ringMovement.push(true);
@@ -237,7 +244,7 @@ function createParametricSurfaces(obj, innerRadius, outerRadius) {
     for (let angle=0; angle < 2*Math.PI; angle += Math.PI/4) {
         geometry = parametricSurfaces[angle/(Math.PI/4)];
         const random2 = Math.floor(Math.random() * parametricSurfaceColors.length);
-        material = new THREE.MeshStandardMaterial({ color: parametricSurfaceColors[random2], wireframe: false, side: THREE.DoubleSide });
+        material = new THREE.MeshLambertMaterial({ color: parametricSurfaceColors[random2], wireframe: false, side: THREE.DoubleSide });
         mesh = new THREE.Mesh(geometry, material);
 
         mesh.translateOnAxis(new THREE.Vector3(Math.sin(angle), 0, Math.cos(angle)), (innerRadius+outerRadius)/2);
@@ -308,7 +315,7 @@ function createMobiusStrip(x, y, z) {
     // não esquecer de calcular as normais de cada face
     geometry.computeVertexNormals();
     // uma vez na posse de uma geometria, definir um material e criar uma Mesh
-    material = new THREE.MeshBasicMaterial( { color: 0xaec6cf }
+    material = new THREE.MeshLambertMaterial( { color: 0xaec6cf }
     );
     mesh = new THREE.Mesh( geometry, material );
     mobiusStrip.add(mesh);
@@ -353,7 +360,7 @@ function moveRing(num) {
 
 function moveSurfaces() {
     for (var i=0; i<parametricSurfaces.length; i++) {
-        parametricSurfaces[i].rotateZ(surfaceVelocity);
+        parametricSurfaces[i].rotateZ(surfaceRotationVelocity);
     }
 }
 
@@ -424,6 +431,7 @@ function init() {
     createDirectionalLight();
 
     ringRotationVelocity = determine_rotation_direction(ringRotationVelocity);
+    surfaceRotationVelocity = determine_rotation_direction(surfaceRotationVelocity);
 
     window.addEventListener("keypress", onKeyPress);
     window.addEventListener("keydown", onKeyDown);
