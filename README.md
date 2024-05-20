@@ -17,7 +17,7 @@
 
 ### Distribuição de tarefas:
 #### DONE:
-Tarefa 1, Tarefa 4, Tarefa 8
+Tarefa 1, Tarefa 4, Tarefa 8, Tarefa 2, Tarefa 3
 
 #### TODO:
-Tarefa 2, Tarefa 3, Tarefa 5, Tarefa 6, Tarefa 7
+Tarefa 5, Tarefa 6, Tarefa 7
