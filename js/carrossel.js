@@ -56,6 +56,9 @@ var axis;
     const maximumHeight = 8;
     const minimumHeight = -8;
 
+// Cylinder and surfaces movement
+    const surfaceVelocity = 0.01;
+
 /////////////////////
 /* CREATE SCENE(S) */
 /////////////////////
@@ -345,10 +348,17 @@ function moveRing(num) {
     }
 }
 
+function moveSurfaces() {
+    for (let i=0; i<parametricSurfaces.length; i++) {
+        parametricSurfaces[i].rotateY(surfaceVelocity);
+    }
+}
+
 function update(){
     'use strict';
 
-    cylinder.rotateY(0.01);
+    cylinder.rotateY(surfaceVelocity);
+    moveSurfaces();
 
     if (keys[49]) { // Tecla '1'
         moveRing(0);
