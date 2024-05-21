@@ -38,6 +38,10 @@ const clock = new THREE.Clock();
 // Cylinder and surfaces movement
     var surfaceRotationVelocity = 0.8;
 
+// Active key
+    var active_key = document.getElementById("active_key_val");
+    var changingTextActiveKey;
+
 // Ring radius
     const ringRadius = 10;
     const ringLength = 2;
@@ -351,6 +355,15 @@ function handleCollisions(){
 ////////////
 /* UPDATE */
 ////////////
+function updateHUD(keyPressed, buttonName, active) {
+    active_key.textContent = keyPressed;
+    changingTextActiveKey = document.getElementById(buttonName);
+    if (active)
+        changingTextActiveKey.style.color = 'LawnGreen';
+    else
+        changingTextActiveKey.style.color = 'White';
+}
+
 function moveRing(num) {
     if (ringMovingUp[num]) {
         rings[num].position.y += ringVelocity*delta;
@@ -403,14 +416,17 @@ function update(){
     if (keys[49]) { // Tecla '1'
         keys[49] = false;
         ringMovement[0] = !ringMovement[0];
+        updateHUD("1", "toggle_inner_ring_movement", ringMovement[0]);
     }
     if (keys[50]) { // Tecla '2'
         keys[50] = false;
         ringMovement[1] = !ringMovement[1];
+        updateHUD("2", "toggle_middle_ring_movement", ringMovement[1]);
     }
     if (keys[51]) { // Tecla '3'
         keys[51] = false;
         ringMovement[2] = !ringMovement[2];
+        updateHUD("3", "toggle_outer_ring_movement", ringMovement[2]);
     }
 }
 
@@ -509,28 +525,55 @@ function onKeyPress(e) {
         case 100: // Tecla 'D(d)'
             if (directionalLight.intensity > 0) { directionalLight.intensity = 0; }
             else { directionalLight.intensity = 3.5; }
+            updateHUD("D", "toggle_global_lighting", directionalLight.intensity > 0);
             break;
         case 115: // Tecla 'S(s)'
             for (let index = 0; index < spotLights.length; index++) {
                 spotLights[index].visible = !spotLights[index].visible;
             }
+            updateHUD("D", "toggle_spotlight_lighting", spotLights[0].visible);
             break;
         case 69: // Tecla 'P(p)'
             break;
         case 113: // Tecla 'Q(q)'
             changeMaterials(materials[0]);
+            updateHUD("", "apply_phong_shading", false);
+            updateHUD("", "apply_cartoon_shading", false);
+            updateHUD("", "apply_normal_shading", false);
+            updateHUD("", "apply_no_shading", false);
+            updateHUD("Q", "apply_gourand_shading", true);
             break;
         case 119: // Tecla 'W(w)'
             changeMaterials(materials[1]);
+            updateHUD("", "apply_gourand_shading", false);
+            updateHUD("", "apply_cartoon_shading", false);
+            updateHUD("", "apply_normal_shading", false);
+            updateHUD("", "apply_no_shading", false);
+            updateHUD("W", "apply_phong_shading", true);
             break;
         case 101: // Tecla 'E(e)'
             changeMaterials(materials[2]);
+            updateHUD("", "apply_gourand_shading", false);
+            updateHUD("", "apply_phong_shading", false);
+            updateHUD("", "apply_normal_shading", false);
+            updateHUD("", "apply_no_shading", false);
+            updateHUD("E", "apply_cartoon_shading", true);
             break;
         case 114: // Tecla 'R(r)'
             changeMaterials(materials[3]);
+            updateHUD("", "apply_gourand_shading", false);
+            updateHUD("", "apply_phong_shading", false);
+            updateHUD("", "apply_cartoon_shading", false);
+            updateHUD("", "apply_no_shading", false);
+            updateHUD("R", "apply_normal_shading", true);
             break;
         case 116: // Tecla 'T(t)'
             changeMaterials(materials[4]);
+            updateHUD("", "apply_gourand_shading", false);
+            updateHUD("", "apply_phong_shading", false);
+            updateHUD("", "apply_cartoon_shading", false);
+            updateHUD("", "apply_normal_shading", false);
+            updateHUD("T", "apply_no_shading", true);
             break;
         default:
             break;
@@ -545,7 +588,7 @@ function onKeyUp(e){
     'use strict';
 
     keys[e.keyCode] = false;
-    //active_key.textContent = "";
+    active_key.textContent = "";
     //changingTextActiveKey.style.color = 'white';
 }
 

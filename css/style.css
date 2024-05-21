@@ -1,0 +1,147 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+}
+
+#keyboard_controls {
+    color: white; 
+    display: block;
+    position: absolute;
+    left: 10px;
+    right: 0px;
+    bottom: 0px;
+    width: 205px;
+    height: 60%;
+    top: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    overflow: auto; 
+    text-align: left;
+    line-height: 5px;
+}
+
+#title {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-left: 55px;
+    display: block;
+}
+
+#toggle_inner_ring_movement {
+    color: lawngreen;
+    font-size: 12px;
+    font-weight: thin;
+    margin-top: 20px;
+    margin-left: 10px;
+    display: block;
+}
+
+#toggle_middle_ring_movement {
+    color: lawngreen;
+    font-size: 12px;
+    font-weight: thin;
+    margin-top: 20px;
+    margin-left: 10px;
+    display: block;
+}
+
+#toggle_outer_ring_movement {
+    color: lawngreen;
+    font-size: 12px;
+    font-weight: thin;
+    margin-top: 20px;
+    margin-left: 10px;
+    display: block;
+}
+
+#apply_gourand_shading {
+    color: lawngreen;
+    font-size: 12px;
+    font-weight: thin;
+    margin-top: 20px;
+    margin-left: 10px;
+    display: block;
+}
+
+#apply_phong_shading {
+    color: white;
+    font-size: 12px;
+    font-weight: thin;
+    margin-top: 20px;
+    margin-left: 10px;
+    display: block;
+}
+
+#apply_cartoon_shading {
+    color: white;
+    font-size: 12px;
+    font-weight: thin;
+    margin-top: 20px;
+    margin-left: 10px;
+    display: block;
+}
+
+#apply_normal_shading {
+    color: white;
+    font-size: 12px;
+    font-weight: thin;
+    margin-top: 20px;
+    margin-left: 10px;
+    display: block;
+}
+
+#apply_no_shading {
+    color: white;
+    font-size: 12px;
+    font-weight: thin;
+    margin-top: 20px;
+    margin-left: 10px;
+    display: block;
+}
+
+#toggle_global_lighting {
+    color: lawngreen;
+    font-size: 12px;
+    font-weight: thin;
+    margin-top: 20px;
+    margin-left: 10px;
+    display: block;
+}
+
+#toggle_mobius_strip_lighting {
+    color: lawngreen;
+    font-size: 12px;
+    font-weight: thin;
+    margin-top: 20px;
+    margin-left: 10px;
+    display: block;
+}
+
+#toggle_spotlight_lighting {
+    color: lawngreen;
+    font-size: 12px;
+    font-weight: thin;
+    margin-top: 20px;
+    margin-left: 10px;
+    display: block;
+}
+
+#active_key {
+    color: white;
+    font-size: 18px;
+    font-weight: thin;
+    margin-top: 20px;
+    margin-left: 10px;
+    display: inline-block;
+}
+
+#active_key_val {
+    color: rgb(235, 120, 225);
+    font-size: 18px;
+    font-weight: thin;
+    margin-top: 20px;
+    margin-left: 10px;
+    display: inline-block;
+}
