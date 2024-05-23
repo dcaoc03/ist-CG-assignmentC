@@ -109,7 +109,7 @@ function createScene() {
     createSkydome(0, 0, 0);
 
     // Mobius Strip creation
-    createMobiusStrip(0, 15, 0);
+    createMobiusStrip(0, 25, 0);
 
     // Cylinder creation
     createCylinder(0, 0, 0);
@@ -295,90 +295,46 @@ function createSkydome(x, y, z) {
 function createMobiusStrip(x, y, z) {
     mobiusStrip = new THREE.Object3D();
     geometry = new THREE.BufferGeometry();
-    // listar vértices (vectores 3D com as coordenadas de cada vértice)
-    /*const vertices = new Float32Array([
-    -1.0, -1.0, 1.0, // v0
-    1.0, -1.0, 1.0, // v1
-    1.0, 1.0, 1.0, // v2
-    -1.0, 1.0, 1.0, // v3
-    -1.0, -1.0, 0.0, // v4
-    1.0, -1.0, 0.0, // v5
-    1.0, 1.0, 0.0, // v6
-    -1.0, 1.0, 0.0, // v7
-    ]);*/
+    
     const vertices = new Float32Array([
-        2, 1, 0, // 0
-        2, -1, 0, // 1
+        5, 1, 0, // 0
+        5, -1, 0, // 1
 
-        2*Math.cos(Math.PI/4)-1*Math.cos(3*Math.PI/8), 1*Math.sin(3*Math.PI/8), -2*Math.cos(Math.PI/4)+1*Math.cos(3*Math.PI/8), // 2
-        2*Math.cos(Math.PI/4)+1*Math.cos(3*Math.PI/8), -1*Math.sin(3*Math.PI/8), -2*Math.cos(Math.PI/4)-1*Math.cos(3*Math.PI/8), // 3
+        5*Math.cos(Math.PI/4)-1*Math.cos(3*Math.PI/8), 1*Math.sin(3*Math.PI/8), -5*Math.cos(Math.PI/4)+1*Math.cos(3*Math.PI/8), // 2
+        5*Math.cos(Math.PI/4)+1*Math.cos(3*Math.PI/8), -1*Math.sin(3*Math.PI/8), -5*Math.cos(Math.PI/4)-1*Math.cos(3*Math.PI/8), // 3
 
-        0, 1*Math.sin(Math.PI/4), -2+1*Math.cos(Math.PI/4), // 4
-        0, -1*Math.sin(Math.PI/4), -2-1*Math.cos(Math.PI/4), // 5
+        0, 1*Math.sin(Math.PI/4), -5+1*Math.cos(Math.PI/4), // 4
+        0, -1*Math.sin(Math.PI/4), -5-1*Math.cos(Math.PI/4), // 5
 
-        -2*Math.cos(Math.PI/4)+1*Math.cos(Math.PI/8), 1*Math.sin(Math.PI/8), -2*Math.cos(Math.PI/4)+1*Math.cos(Math.PI/8), // 6
-        -2*Math.cos(Math.PI/4)-1*Math.cos(Math.PI/8), -1*Math.sin(Math.PI/8), -2*Math.cos(Math.PI/4)-1*Math.cos(Math.PI/8), // 7
+        -5*Math.cos(Math.PI/4)+1*Math.cos(Math.PI/8), 1*Math.sin(Math.PI/8), -5*Math.cos(Math.PI/4)+1*Math.cos(Math.PI/8), // 6
+        -5*Math.cos(Math.PI/4)-1*Math.cos(Math.PI/8), -1*Math.sin(Math.PI/8), -5*Math.cos(Math.PI/4)-1*Math.cos(Math.PI/8), // 7
 
-        -1, 0, 0, // 8
-        -3, 0, 0, // 9
+        -4, 0, 0, // 8
+        -6, 0, 0, // 9
 
-        -2*Math.cos(Math.PI/4)+1*Math.cos(Math.PI/8), -1*Math.sin(Math.PI/8), 2*Math.cos(Math.PI/4)-1*Math.cos(Math.PI/8), // 10
-        -2*Math.cos(Math.PI/4)-1*Math.cos(Math.PI/8), 1*Math.sin(Math.PI/8), 2*Math.cos(Math.PI/4)+1*Math.cos(Math.PI/8), // 11
+        -5*Math.cos(Math.PI/4)+1*Math.cos(Math.PI/8), -1*Math.sin(Math.PI/8), 5*Math.cos(Math.PI/4)-1*Math.cos(Math.PI/8), // 10
+        -5*Math.cos(Math.PI/4)-1*Math.cos(Math.PI/8), 1*Math.sin(Math.PI/8), 5*Math.cos(Math.PI/4)+1*Math.cos(Math.PI/8), // 11
 
-        0, -1*Math.sin(Math.PI/4), 2-1*Math.cos(Math.PI/4), // 12
-        0, 1*Math.sin(Math.PI/4), 2+1*Math.cos(Math.PI/4), // 13
+        0, -1*Math.sin(Math.PI/4), 5-1*Math.cos(Math.PI/4), // 12
+        0, 1*Math.sin(Math.PI/4), 5+1*Math.cos(Math.PI/4), // 13
         
-        2*Math.cos(Math.PI/4)-1*Math.cos(3*Math.PI/8), -1*Math.sin(3*Math.PI/8), 2*Math.cos(Math.PI/4)-1*Math.cos(3*Math.PI/8), // 14
-        2*Math.cos(Math.PI/4)+1*Math.cos(3*Math.PI/8), 1*Math.sin(3*Math.PI/8), 2*Math.cos(Math.PI/4)+1*Math.cos(3*Math.PI/8), // 15
+        5*Math.cos(Math.PI/4)-1*Math.cos(3*Math.PI/8), -1*Math.sin(3*Math.PI/8), 5*Math.cos(Math.PI/4)-1*Math.cos(3*Math.PI/8), // 14
+        5*Math.cos(Math.PI/4)+1*Math.cos(3*Math.PI/8), 1*Math.sin(3*Math.PI/8), 5*Math.cos(Math.PI/4)+1*Math.cos(3*Math.PI/8), // 15
+        
+        5, -1, 0, // 16
+        5, 1, 0, // 17
     ])
-    const indices = [
-        0, 1, 2,
-        1, 3, 2,
 
-        2, 3, 4,
-        3, 5, 4,
+    var indices = [];
+    for (let i = 0; i < 8; i++) {
+        indices.push(2*i, 2*i+1, 2*i+2, 2*i+1, 2*i+3, (i+1)*2);
+    }
 
-        4, 5, 6,
-        5, 7, 6,
-
-        6, 7, 8,
-        7, 9, 8,
-
-        8, 9, 10,
-        9, 11, 10,
-
-        10, 11, 12,
-        11, 13, 12,
-
-        12, 13, 14,
-        13, 15, 14,
-
-        14, 15, 1,
-        15, 0, 1,
-
-        /*4, 7, 5,
-        5, 7, 6,
-
-        6, 7, 1,
-        6, 1, 0,*/
-    ] 
     geometry.setIndex( indices );
     geometry.setAttribute( 'position', new THREE.BufferAttribute(vertices, 3) );
-    // listar tripletos de índices por forma a definir cada face/triângulo
-    // notem que a sequência de índices deve indicar o sentido da normal
-    /*const indices = [
-                    0, 1, 2,
-                    2, 3, 0,
-                    4, 5, 6,
-                    6, 7, 4,
-                    0, 4, 5,
-                    5, 1, 0,
-                    2, 6, 7,
-                    7, 3, 2
-                    ];*/
-    // não esquecer de calcular as normais de cada face
+    
     geometry.computeVertexNormals();
-    // uma vez na posse de uma geometria, definir um material e criar uma Mesh
+    
     material = new THREE.MeshLambertMaterial( { color: 0xaec6cf,  side: THREE.DoubleSide }
     );
     mesh = new THREE.Mesh( geometry, material );
