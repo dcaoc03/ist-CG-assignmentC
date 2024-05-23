@@ -11,33 +11,35 @@ import { VRButton } from 'three/addons/webxr/VRButton.js';
 /* GLOBAL VARIABLES */
 //////////////////////
 
-var camera, scene, renderer;
+// Scene creation
+    var camera, scene, renderer, axis;
 
-var geometry, material, mesh;
+// Object creation
+    var geometry, material, mesh;
 
-var directionalLight;
-var cylinder;
-var rings = [], spotLights = [];
-var ringRotationVelocity = 0.4;
-var parametricSurfaces = [];
-const parametricSurfaceColors = [0x63b4d1, 0x7699d4, 0x487de7, 0x4b369d, 0x70369d, 0x188fac, 0x826c7f, 0x5d4e60];
-var materials = [];
-var mobiusStrip
+// Lights
+    var directionalLight, spotLights = [], pointights = [];
 
-var keys = {};
-
-var axis;
+// Objects
+    var cylinder;
+    var rings = [];
+    var parametricSurfaces = [];
+    const parametricSurfaceColors = [0x63b4d1, 0x7699d4, 0x487de7, 0x4b369d, 0x70369d, 0x188fac, 0x826c7f, 0x5d4e60];
+    var materials = [];
+    var mobiusStrip;
 
 // Value of delta for a given frame
-var delta;
+    var delta;
 
 // Clock of the machine
-const clock = new THREE.Clock();
+    const clock = new THREE.Clock();
 
-// Cylinder and surfaces movement
+// Rotation movements
+    var ringRotationVelocity = 0.4;
     var surfaceRotationVelocity = 0.8;
 
 // Active key
+    var keys = {};
     var active_key = document.getElementById("active_key_val");
     var changingTextActiveKey;
 
@@ -439,6 +441,7 @@ function render() {
 /* INITIALIZE ANIMATION CYCLE */
 ////////////////////////////////
 
+// randomizes if an object rotates clockwise or counterclockwise
 function determine_rotation_direction(velocity) {
     var random = Math.floor(Math.random() * 3) - 1;
     while (!random) {
