@@ -18,8 +18,6 @@ var geometry, material, mesh;
 var directionalLight;
 var cylinder;
 var rings = [], spotLights = [];
-var ringMovement = [];
-var ringMovingUp = [];
 var ringRotationVelocity = 0.4;
 var parametricSurfaces = [];
 const parametricSurfaceColors = [0x63b4d1, 0x7699d4, 0x487de7, 0x4b369d, 0x70369d, 0x188fac, 0x826c7f, 0x5d4e60];
@@ -68,9 +66,8 @@ const clock = new THREE.Clock();
     const outerRingColor = 0xd66ba0;
 
 // Ring movement
-    const ringVelocity = 3;
+    const ringVelocity = 0.5;
     const maximumHeight = 8;
-    const minimumHeight = -8;
 
 /////////////////////
 /* CREATE SCENE(S) */
@@ -111,7 +108,7 @@ function createScene() {
     createSkydome(0, 0, 0);
 
     // Mobius Strip creation
-    createMobiusStrip(0, 25, 0);
+    createMobiusStrip(0, 10, 0);
 
     // Cylinder creation
     createCylinder(0, 0, 0);
@@ -208,6 +205,7 @@ function createRing(x, y, z, innerRadius, outerRadius, ringColor) {
     'use strict';
 
     var ring = new THREE.Object3D();
+    ring.userData = { moving: true, step: 0 };
 
     const shape = new THREE.Shape();
     shape.moveTo(-ringLength/2, -ringHeight/2);
@@ -233,8 +231,6 @@ function createRing(x, y, z, innerRadius, outerRadius, ringColor) {
     material = new THREE.MeshLambertMaterial({ color: ringColor, wireframe: false });
     mesh = new THREE.Mesh(geometry, material);
     mesh.rotateX(3*Math.PI/2);
-    ringMovement.push(true);
-    ringMovingUp.push(true);
 
     ring.add(mesh);
     createParametricSurfaces(ring, innerRadius, outerRadius);
@@ -299,7 +295,7 @@ function createMobiusStrip(x, y, z) {
     var mobiusStrip = new THREE.Object3D();
     geometry = new THREE.BufferGeometry();
     // listar vértices (vectores 3D com as coordenadas de cada vértice)
-    const vertices = new Float32Array([
+    /*const vertices = new Float32Array([
     -1.0, -1.0, 1.0, // v0
     1.0, -1.0, 1.0, // v1
     1.0, 1.0, 1.0, // v2
@@ -308,11 +304,35 @@ function createMobiusStrip(x, y, z) {
     1.0, -1.0, 0.0, // v5
     1.0, 1.0, 0.0, // v6
     -1.0, 1.0, 0.0, // v7
-    ]);
+    ]);*/
+    const vertices = new Float32Array([
+        2, 1, 0,
+        2, -1, 0,
+
+        0, 1, -2,
+        0, -1, -2,
+
+        -2, 1, 0,
+        -2, -1, 0,
+
+        0, 1, 2,
+        0, -1, 2,
+    ])
+    const indices = [
+        0, 1, 2,
+        1, 3, 2,
+        2, 3, 4,
+        3, 5, 4,
+        4, 5, 6,
+        5, 7, 6,
+        6, 7, 0,
+        7, 1, 0
+    ] 
+    geometry.setIndex( indices );
     geometry.setAttribute( 'position', new THREE.BufferAttribute(vertices, 3) );
     // listar tripletos de índices por forma a definir cada face/triângulo
     // notem que a sequência de índices deve indicar o sentido da normal
-    const indices = [
+    /*const indices = [
                     0, 1, 2,
                     2, 3, 0,
                     4, 5, 6,
@@ -321,12 +341,11 @@ function createMobiusStrip(x, y, z) {
                     5, 1, 0,
                     2, 6, 7,
                     7, 3, 2
-                    ];
-    geometry.setIndex( indices );
+                    ];*/
     // não esquecer de calcular as normais de cada face
     geometry.computeVertexNormals();
     // uma vez na posse de uma geometria, definir um material e criar uma Mesh
-    material = new THREE.MeshLambertMaterial( { color: 0xaec6cf }
+    material = new THREE.MeshLambertMaterial( { color: 0xaec6cf,  side: THREE.DoubleSide }
     );
     mesh = new THREE.Mesh( geometry, material );
     mobiusStrip.add(mesh);
@@ -365,17 +384,8 @@ function updateHUD(keyPressed, buttonName, active) {
 }
 
 function moveRing(num) {
-    if (ringMovingUp[num]) {
-        rings[num].position.y += ringVelocity*delta;
-        spotLights[num].position.y += ringVelocity*delta;
-        if (rings[num].position.y >= maximumHeight)
-            ringMovingUp[num] = false;
-    } else {
-        rings[num].position.y -= ringVelocity*delta;
-        spotLights[num].position.y -= ringVelocity*delta;
-        if (rings[num].position.y <= minimumHeight)
-            ringMovingUp[num] = true;
-    }
+    rings[num].userData.step += ringVelocity*delta;
+    rings[num].position.y = (maximumHeight * (Math.sin(rings[num].userData.step)));
 }
 
 function moveSurfaces() {
@@ -402,31 +412,26 @@ function update(){
 
     cylinder.rotateY(ringRotationVelocity*delta);
     moveSurfaces();
-    
-    if (ringMovement[0]) {
-        moveRing(0);
-    }
-    if (ringMovement[1]) {
-        moveRing(1);
-    }
-    if (ringMovement[2]) {
-        moveRing(2);
+
+    for (let i = 0; i < rings.length; i++) {
+        if (rings[i].userData.moving)
+            moveRing(i);
     }
 
     if (keys[49]) { // Tecla '1'
         keys[49] = false;
-        ringMovement[0] = !ringMovement[0];
-        updateHUD("1", "toggle_inner_ring_movement", ringMovement[0]);
+        rings[0].userData.moving = !rings[0].userData.moving;
+        updateHUD("1", "toggle_inner_ring_movement", rings[0].userData.moving);
     }
     if (keys[50]) { // Tecla '2'
         keys[50] = false;
-        ringMovement[1] = !ringMovement[1];
-        updateHUD("2", "toggle_middle_ring_movement", ringMovement[1]);
+        rings[1].userData.moving = !rings[1].userData.moving;
+        updateHUD("2", "toggle_middle_ring_movement", rings[1].userData.moving);
     }
     if (keys[51]) { // Tecla '3'
         keys[51] = false;
-        ringMovement[2] = !ringMovement[2];
-        updateHUD("3", "toggle_outer_ring_movement", ringMovement[2]);
+        rings[2].userData.moving = !rings[2].userData.moving;
+        updateHUD("3", "toggle_outer_ring_movement", rings[2].userData.moving);
     }
 }
 
