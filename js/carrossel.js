@@ -27,6 +27,7 @@ import { VRButton } from 'three/addons/webxr/VRButton.js';
     const parametricSurfaceColors = [0x63b4d1, 0x7699d4, 0x487de7, 0x4b369d, 0x70369d, 0x188fac, 0x826c7f, 0x5d4e60];
     var materials = [];
     var mobiusStrip;
+    const mobiusStripColor = 0xaec6cf;
 
 // Value of delta for a given frame
     var delta;
@@ -337,7 +338,7 @@ function createMobiusStrip(x, y, z) {
     
     geometry.computeVertexNormals();
     
-    material = new THREE.MeshLambertMaterial( { color: 0xaec6cf,  side: THREE.DoubleSide }
+    material = new THREE.MeshLambertMaterial( { color: mobiusStripColor,  side: THREE.DoubleSide }
     );
     mesh = new THREE.Mesh( geometry, material );
     mobiusStrip.add(mesh);
@@ -396,8 +397,17 @@ function moveSurfaces() {
 }
 
 function changeMaterials(newMaterial) {
-    // Change cylinder
+    // Change cylinder and its children
     cylinder.traverse(function (node) {
+        if (node instanceof THREE.Mesh) {
+            var oldMaterialColor = node.material.color;
+            node.material = newMaterial.clone();
+            node.material.color = oldMaterialColor;
+        }
+    });
+
+    // Change the mobius strip
+    mobiusStrip.traverse(function (node) {
         if (node instanceof THREE.Mesh) {
             var oldMaterialColor = node.material.color;
             node.material = newMaterial.clone();
