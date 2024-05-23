@@ -109,13 +109,13 @@ function createScene() {
     scene.add(axis);
 
     // Skydome creation
-    createSkydome(0, 0, 0);
+    createSkydome(0, 0-5, 0);
 
     // Mobius Strip creation
-    createMobiusStrip(0, 25, 0);
+    createMobiusStrip(0, 25-5, 0);
 
     // Cylinder creation
-    createCylinder(0, 0, 0);
+    createCylinder(0, 0-5, 0);
 
     // Array of Parametric Geometries creation
     parametricSurfaces.push(new ParametricGeometry(ParametricGeometries.mobius3d));
@@ -131,9 +131,9 @@ function createScene() {
     parametricSurfaces.push(new ParametricGeometry(ParametricGeometries.plane(4, 3), 25, 25));
 
     // Ring creation
-    rings.push(createRing(0, 0, 0, innerRingInnerRadius, innerRingOuterRadius, innerRingColor));
-    rings.push(createRing(0, 0, 0, middleRingInnerRadius, middleRingOuterRadius, middleRingColor));
-    rings.push(createRing(0, 0, 0, outerRingInnerRadius, outerRingOuterRadius, outerRingColor));
+    rings.push(createRing(0, 0-5, 0, innerRingInnerRadius, innerRingOuterRadius, innerRingColor));
+    rings.push(createRing(0, 0-5, 0, middleRingInnerRadius, middleRingOuterRadius, middleRingColor));
+    rings.push(createRing(0, 0-5, 0, outerRingInnerRadius, outerRingOuterRadius, outerRingColor));
     
     // Adding the rings to the axis of the cylinder
     cylinder.add(rings[0]);
@@ -281,7 +281,7 @@ function createSkydome(x, y, z) {
 
     var skydome = new THREE.Object3D();
 
-    geometry = new THREE.SphereGeometry(2*outerRingOuterRadius, 32, 32, 0, Math.PI * 2, 0, Math.PI/2);
+    geometry = new THREE.SphereGeometry(2*outerRingOuterRadius, 32, 32, 0, Math.PI * 2, 0, 2*Math.PI/3);
     var loader  = new THREE.TextureLoader();
     var texture = loader.load( "still_video.png" );
     material = new THREE.MeshPhongMaterial({ map: texture, side: THREE.BackSide});
