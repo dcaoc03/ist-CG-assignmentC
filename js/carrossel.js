@@ -22,6 +22,7 @@ var ringRotationVelocity = 0.4;
 var parametricSurfaces = [];
 const parametricSurfaceColors = [0x63b4d1, 0x7699d4, 0x487de7, 0x4b369d, 0x70369d, 0x188fac, 0x826c7f, 0x5d4e60];
 var materials = [];
+var mobiusStrip
 
 var keys = {};
 
@@ -108,7 +109,7 @@ function createScene() {
     createSkydome(0, 0, 0);
 
     // Mobius Strip creation
-    createMobiusStrip(0, 10, 0);
+    createMobiusStrip(0, 15, 0);
 
     // Cylinder creation
     createCylinder(0, 0, 0);
@@ -292,7 +293,7 @@ function createSkydome(x, y, z) {
 }
 
 function createMobiusStrip(x, y, z) {
-    var mobiusStrip = new THREE.Object3D();
+    mobiusStrip = new THREE.Object3D();
     geometry = new THREE.BufferGeometry();
     // listar vértices (vectores 3D com as coordenadas de cada vértice)
     /*const vertices = new Float32Array([
@@ -306,27 +307,60 @@ function createMobiusStrip(x, y, z) {
     -1.0, 1.0, 0.0, // v7
     ]);*/
     const vertices = new Float32Array([
-        2, 1, 0,
-        2, -1, 0,
+        2, 1, 0, // 0
+        2, -1, 0, // 1
 
-        0, 1, -2,
-        0, -1, -2,
+        2*Math.cos(Math.PI/4)-1*Math.cos(3*Math.PI/8), 1*Math.sin(3*Math.PI/8), -2*Math.cos(Math.PI/4)+1*Math.cos(3*Math.PI/8), // 2
+        2*Math.cos(Math.PI/4)+1*Math.cos(3*Math.PI/8), -1*Math.sin(3*Math.PI/8), -2*Math.cos(Math.PI/4)-1*Math.cos(3*Math.PI/8), // 3
 
-        -2, 1, 0,
-        -2, -1, 0,
+        0, 1*Math.sin(Math.PI/4), -2+1*Math.cos(Math.PI/4), // 4
+        0, -1*Math.sin(Math.PI/4), -2-1*Math.cos(Math.PI/4), // 5
 
-        0, 1, 2,
-        0, -1, 2,
+        -2*Math.cos(Math.PI/4)+1*Math.cos(Math.PI/8), 1*Math.sin(Math.PI/8), -2*Math.cos(Math.PI/4)+1*Math.cos(Math.PI/8), // 6
+        -2*Math.cos(Math.PI/4)-1*Math.cos(Math.PI/8), -1*Math.sin(Math.PI/8), -2*Math.cos(Math.PI/4)-1*Math.cos(Math.PI/8), // 7
+
+        -1, 0, 0, // 8
+        -3, 0, 0, // 9
+
+        -2*Math.cos(Math.PI/4)+1*Math.cos(Math.PI/8), -1*Math.sin(Math.PI/8), 2*Math.cos(Math.PI/4)-1*Math.cos(Math.PI/8), // 10
+        -2*Math.cos(Math.PI/4)-1*Math.cos(Math.PI/8), 1*Math.sin(Math.PI/8), 2*Math.cos(Math.PI/4)+1*Math.cos(Math.PI/8), // 11
+
+        0, -1*Math.sin(Math.PI/4), 2-1*Math.cos(Math.PI/4), // 12
+        0, 1*Math.sin(Math.PI/4), 2+1*Math.cos(Math.PI/4), // 13
+        
+        2*Math.cos(Math.PI/4)-1*Math.cos(3*Math.PI/8), -1*Math.sin(3*Math.PI/8), 2*Math.cos(Math.PI/4)-1*Math.cos(3*Math.PI/8), // 14
+        2*Math.cos(Math.PI/4)+1*Math.cos(3*Math.PI/8), 1*Math.sin(3*Math.PI/8), 2*Math.cos(Math.PI/4)+1*Math.cos(3*Math.PI/8), // 15
     ])
     const indices = [
         0, 1, 2,
         1, 3, 2,
+
         2, 3, 4,
         3, 5, 4,
+
         4, 5, 6,
         5, 7, 6,
-        6, 7, 0,
-        7, 1, 0
+
+        6, 7, 8,
+        7, 9, 8,
+
+        8, 9, 10,
+        9, 11, 10,
+
+        10, 11, 12,
+        11, 13, 12,
+
+        12, 13, 14,
+        13, 15, 14,
+
+        14, 15, 1,
+        15, 0, 1,
+
+        /*4, 7, 5,
+        5, 7, 6,
+
+        6, 7, 1,
+        6, 1, 0,*/
     ] 
     geometry.setIndex( indices );
     geometry.setAttribute( 'position', new THREE.BufferAttribute(vertices, 3) );
@@ -412,6 +446,7 @@ function update(){
 
     cylinder.rotateY(ringRotationVelocity*delta);
     moveSurfaces();
+    mobiusStrip.rotateY(ringRotationVelocity*delta);
 
     for (let i = 0; i < rings.length; i++) {
         if (rings[i].userData.moving)
