@@ -18,7 +18,7 @@ import { VRButton } from 'three/addons/webxr/VRButton.js';
     var geometry, material, mesh;
 
 // Lights
-    var directionalLight, spotLights = [], pointights = [];
+    var directionalLight, spotLights = [], pointLights = [];
 
 // Objects
     var cylinder;
@@ -341,6 +341,15 @@ function createMobiusStrip(x, y, z) {
     );
     mesh = new THREE.Mesh( geometry, material );
     mobiusStrip.add(mesh);
+
+    // Adding the point lights
+    for (let i = 0; i < 8; i++) {
+        const light = new THREE.PointLight( 0xffffff, 10, 100 );
+        light.position.set(6*Math.cos(i*Math.PI/4), 0, 6*Math.sin(i*Math.PI/4));
+        pointLights.push(light);
+        mobiusStrip.add(light);
+    }
+
     mobiusStrip.position.x = x;
     mobiusStrip.position.y = y;
     mobiusStrip.position.z = z;
@@ -526,6 +535,12 @@ function onKeyPress(e) {
             else { directionalLight.intensity = 3.5; }
             updateHUD("D", "toggle_global_lighting", directionalLight.intensity > 0);
             break;
+        case 112: // Tecla 'P(p)'
+            for (let index = 0; index < pointLights.length; index++) {
+                pointLights[index].visible = !pointLights[index].visible;
+            }
+            updateHUD("P", "toggle_mobius_strip_lighting", pointLights[0].visible);
+        break;
         case 115: // Tecla 'S(s)'
             for (let index = 0; index < spotLights.length; index++) {
                 spotLights[index].visible = !spotLights[index].visible;
