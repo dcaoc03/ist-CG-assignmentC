@@ -70,8 +70,8 @@ import { VRButton } from 'three/addons/webxr/VRButton.js';
     const outerRingColor = 0xd66ba0;
 
 // Ring movement
-    const ringVelocity = 0.5;
-    const maximumHeight = 8;
+    const ringVelocity = 1.5;
+    const maximumHeight = 15;
 
 /////////////////////
 /* CREATE SCENE(S) */
